@@ -6,7 +6,7 @@ import { GameUI } from "./game-ui";
 export default async function GamePage({
   params,
 }: {
-  params: { game_id: string };
+  params: Promise<{ game_id: string }>;
 }) {
   await params;
   const { game_id } = await params;
