@@ -1,10 +1,8 @@
 import type * as Party from "partykit/server";
 import { produce } from "immer";
 
-import type { GameState } from "@/app/types";
+import type { GameState, GuessCharacter } from "@/app/types";
 import { words } from "@/lib/words";
-
-const randomId = () => Math.random().toString(36).substring(2, 10);
 
 export default class Server implements Party.Server {
   constructor(readonly room: Party.Room) {}
@@ -12,7 +10,7 @@ export default class Server implements Party.Server {
   gameState: GameState | undefined;
 
   /**
-   * A GET request is handled here to create a new room
+   * A POST request is handled here to create a new room
    */
   async onRequest(req: Party.Request) {
     if (req.method === "POST") {
@@ -22,10 +20,9 @@ export default class Server implements Party.Server {
       };
       this.gameState = {
         id: datum.id,
-        word: "",
-        players: [
-          { id: randomId(), username: datum.username, state: { guesses: [] } },
-        ],
+        canGuess: false,
+        word: "biome",
+        players: [],
       };
     }
 
@@ -44,18 +41,35 @@ export default class Server implements Party.Server {
    */
   async onConnect(connection: Party.Connection, ctx: Party.ConnectionContext) {
     const params = new URLSearchParams(ctx.request.url.split("?")[1]);
-    const user = {
-      name: params.get("name") ?? undefined,
-    };
+    const username = params.get("username") ?? "Biome";
+    const playerId = params.get("playerId");
 
-    let gameState = (await this.room.storage.get("gameState")) as GameState;
+    if (!playerId) throw new Error("Missing player id");
+
+    if (!this.gameState) throw new Error("No game state");
+
+    if (this.gameState.players.find((p) => p.id === playerId)) {
+      // The player exists, we're ok
+      return;
+    }
+
+    this.gameState = produce(this.gameState, (draft) => {
+      draft.players.push({
+        id: playerId,
+        username,
+        guesses: [],
+        score: 0,
+      });
+    });
+    this.saveGameState();
+    this.room.broadcast(JSON.stringify(this.gameState));
   }
 
   // Handle messages
   async onMessage(message: string) {
     if (!this.gameState) return;
 
-    const event = JSON.parse(message) as { type: "guess" | "next" };
+    const event = JSON.parse(message) as { type: "start" | "guess" | "next" };
 
     if (event.type === "guess") {
       const { playerId, guess } = JSON.parse(message) as {
@@ -66,9 +80,22 @@ export default class Server implements Party.Server {
       this.handleGuess(guess, playerId);
     }
 
+    if (event.type === "start") {
+      this.handleStartGame();
+    }
+
     if (event.type === "next") {
       this.handleNextRound();
     }
+  }
+
+  async handleStartGame() {
+    if (!this.gameState) throw new Error("Missing game state");
+    this.gameState = produce(this.gameState, (draft) => {
+      draft.canGuess = true;
+    });
+    this.saveGameState();
+    this.room.broadcast(JSON.stringify(this.gameState));
   }
 
   /**
@@ -76,19 +103,45 @@ export default class Server implements Party.Server {
    */
   async handleGuess(guess: string, playerId: string) {
     if (!this.gameState) throw new Error("Missing game state");
+    if (!this.gameState.canGuess) return;
     this.gameState = produce(this.gameState, (draft) => {
       const player = draft.players.find((player) => player.id === playerId);
       if (!player) throw new Error("Missing player");
+      if (player.guesses.length > 5) {
+        // The user is trying to guess more than allowed
+        return;
+      }
+      if (player.completedAt) {
+        // They have already won
+        return;
+      }
       const word = draft.word;
       // make guess and tell if its right or not
-      player.guesses.push([
-        { value: "a", status: "absent" },
-        { value: "p", status: "absent" },
-        { value: "p", status: "absent" },
-        { value: "l", status: "absent" },
-        { value: "e", status: "absent" },
-      ]);
+      const result = guess.split("").map((value, idx): GuessCharacter => {
+        if (word[idx] === value) {
+          return {
+            value,
+            status: "correct",
+          };
+        }
+
+        if (word.split("").includes(value)) {
+          return {
+            value,
+            status: "present",
+          };
+        }
+
+        return {
+          value,
+          status: "absent",
+        };
+      });
+
+      player.guesses.push(result);
+
       if (guess === word) {
+        player.score += 1;
         player.completedAt = Date.now();
       }
     });
@@ -102,7 +155,7 @@ export default class Server implements Party.Server {
   async handleNextRound() {
     if (!this.gameState) throw new Error("Missing game state");
     // Get a random word to use next
-    let word = words[Math.floor(Math.random() * words.length)];
+    const word = words[Math.floor(Math.random() * words.length)];
     this.gameState = produce(this.gameState, (draft) => {
       draft.word = word;
       draft.players.forEach((player) => {

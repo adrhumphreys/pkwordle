@@ -8,9 +8,10 @@ export default async function GamePage({
 }: {
   params: { game_id: string };
 }) {
-  const gameId = params.game_id;
+  await params;
+  const { game_id } = await params;
 
-  const req = await fetch(`${PARTYKIT_URL}/party/${gameId}`, {
+  const req = await fetch(`${PARTYKIT_URL}/party/${game_id}`, {
     method: "GET",
   });
 
@@ -25,11 +26,9 @@ export default async function GamePage({
   const initialState = (await req.json()) as GameState;
 
   return (
-    <>
-      <div className="flex flex-col space-y-4">
-        <h1 className="text-2xl font-bold">Room: {initialState.id}</h1>
-        <GameUI initialState={initialState} />
-      </div>
-    </>
+    <div className="flex flex-col space-y-4 p-8">
+      <h1 className="text-2xl font-bold">Room: {initialState.id}</h1>
+      <GameUI initialState={initialState} />
+    </div>
   );
 }

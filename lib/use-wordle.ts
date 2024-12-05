@@ -2,12 +2,15 @@ import usePartySocket from "partysocket/react";
 import { PARTYKIT_HOST } from "./env";
 import { GameState } from "@/app/types";
 import { useCallback, useState } from "react";
+import { words } from "./words";
 
 export const useWordle = ({
-  userId,
+  playerId,
+  username,
   initialState,
 }: {
-  userId: string;
+  playerId: string;
+  username: string;
   initialState: GameState;
 }) => {
   const [currentState, setCurrentState] = useState<GameState>(initialState);
@@ -19,28 +22,35 @@ export const useWordle = ({
       const message = JSON.parse(event.data) as GameState;
       setCurrentState(message);
     },
+    query: async () => ({
+      username,
+      playerId,
+    }),
   });
 
-  const [currentGuess, setCurrentGuess] = useState<string[]>([]);
+  const start = useCallback(() => {
+    socket.send(JSON.stringify({ type: "start" }));
+  }, [socket]);
 
-  const handleChangeCharacter = useCallback((char: string, idx: number) => {
-    setCurrentGuess((current) => {
-      current[idx] = char;
-      return current;
-    });
-  }, []);
+  const startNextRound = useCallback(() => {
+    socket.send(JSON.stringify({ type: "next" }));
+  }, [socket]);
 
-  const handleSubmitGuess = useCallback(() => {
-    if (currentGuess.length !== 5) {
-      throw new Error("Guess was not 5 characters");
-    }
+  const submitGuess = useCallback(
+    (guess: string) => {
+      if (!words.includes(guess)) {
+        throw new Error("Guess was not a valid word");
+      }
 
-    socket.send(JSON.stringify({ guess: currentGuess, userId }));
-  }, [currentGuess, userId, socket]);
+      socket.send(JSON.stringify({ type: "guess", guess, playerId }));
+    },
+    [playerId, socket]
+  );
 
   return {
     currentState,
-    handleChangeCharacter,
-    handleSubmitGuess,
+    submitGuess,
+    start,
+    startNextRound,
   };
 };
