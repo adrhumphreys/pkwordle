@@ -21,7 +21,7 @@ export default class Server implements Party.Server {
       this.gameState = {
         id: datum.id,
         canGuess: false,
-        word: "biome",
+        word: "mango",
         players: [],
       };
     }
@@ -93,6 +93,7 @@ export default class Server implements Party.Server {
     if (!this.gameState) throw new Error("Missing game state");
     this.gameState = produce(this.gameState, (draft) => {
       draft.canGuess = true;
+      draft.startedAt = Date.now();
     });
     this.saveGameState();
     this.room.broadcast(JSON.stringify(this.gameState));
@@ -141,7 +142,11 @@ export default class Server implements Party.Server {
       player.guesses.push(result);
 
       if (guess === word) {
-        player.score += 1;
+        const winners = draft.players.filter(
+          (p) => p.completedAt !== undefined
+        ).length;
+        // First 3 players get points
+        player.score += Math.max(3 - winners, 0);
         player.completedAt = Date.now();
       }
     });
@@ -158,6 +163,7 @@ export default class Server implements Party.Server {
     const word = words[Math.floor(Math.random() * words.length)];
     this.gameState = produce(this.gameState, (draft) => {
       draft.word = word;
+      draft.startedAt = Date.now();
       draft.players.forEach((player) => {
         player.guesses = [];
         player.completedAt = undefined;

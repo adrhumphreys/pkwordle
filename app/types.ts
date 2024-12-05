@@ -19,4 +19,5 @@ export type GameState = {
   word: string;
   canGuess: boolean;
   players: PlayerState[];
+  startedAt?: number;
 };
