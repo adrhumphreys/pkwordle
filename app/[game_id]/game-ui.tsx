@@ -105,10 +105,10 @@ export function GameUI({ initialState }: { initialState: GameState }) {
       <div className="flex flex-col gap-1 max-w-sm w-full">
         <p>Scores:</p>
         <ul>
-          {currentState.players.map((player, idx) => (
+          {currentState.players.map((player) => (
             <li key={player.id}>
               {player.username}: {player.score}
-              {idx !== 0 && player.completedAt && (
+              {finishedPlayers[0].id !== player.id && player.completedAt && (
                 <span className="text-red-600">
                   {" "}
                   (+{player.completedAt - finishedPlayers[0].completedAt!}ms)
