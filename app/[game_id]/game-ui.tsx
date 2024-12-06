@@ -3,7 +3,7 @@
 import JsonView from "react18-json-view";
 import "react18-json-view/src/style.css";
 import { useWordle } from "@/lib/use-wordle";
-import { GameState } from "../types";
+import { WordleGameState } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-export function GameUI({ initialState }: { initialState: GameState }) {
+export function GameUI({ initialState }: { initialState: WordleGameState }) {
   const params = useSearchParams();
   const playerId = params.get("playerId");
   const username = params.get("username");

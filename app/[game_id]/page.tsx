@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { PARTYKIT_URL } from "@/lib/env";
-import { GameState } from "../types";
+import { WordleGameState } from "@/lib/types";
 import { GameUI } from "./game-ui";
 
 export default async function GamePage({
@@ -23,7 +23,7 @@ export default async function GamePage({
     }
   }
 
-  const initialState = (await req.json()) as GameState;
+  const initialState = (await req.json()) as WordleGameState;
 
   return (
     <div className="flex flex-col space-y-4 p-8">
