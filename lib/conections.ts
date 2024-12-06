@@ -1,4 +1,6 @@
-export const connections = [
+import { ImportedConnectionGame } from "@/lib/types";
+
+export const connections: ImportedConnectionGame[] = [
   {
     id: "1",
     name: "Connections #1",
@@ -9288,7 +9290,6 @@ export const connections = [
       ["PENCIL", "VICTOR", "DEREK JETER", "HOTEL"],
       ["ESSAY", "FOXTROT", "CARNATION", "ARTICLE"],
     ],
-    lastUpdated: "2024-06-14T05:01:54.186Z",
   },
   {
     id: "370",
@@ -9483,7 +9484,6 @@ export const connections = [
       ["BUTTERMILK", "RAGS-TO-RICHES", "MERRY-GO-ROUND", "CLEARANCE"],
       ["UNDERDOG", "TILT-A-WHIRL", "GO-AHEAD", "ROLLER COASTER"],
     ],
-    lastUpdated: "2024-06-21T05:04:10.921Z",
   },
   {
     id: "377",
@@ -10134,7 +10134,6 @@ export const connections = [
       ["PIPER", "FIDDLER", "TESTY", "EXPLORATORY"],
       ["MERRILY", "SURLY", "PRELIMINARY", "JERSEY"],
     ],
-    lastUpdated: "2024-07-16T05:01:36.325Z",
   },
   {
     id: "402",
@@ -10311,7 +10310,6 @@ export const connections = [
       ["HAM", "SHAM", "SPEED", "SOUND"],
       ["FRAUD", "NOISE", "SHOWBOAT", "CHARLATAN"],
     ],
-    lastUpdated: "2024-07-23T05:01:37.637Z",
   },
   {
     id: "409",
@@ -10500,7 +10498,6 @@ export const connections = [
       ["COMPOUND", "FLAIR", "NEAT", "EXPLAIN"],
       ["KNACK", "DEVELOPMENT", "SPECIFY", "NIFTY"],
     ],
-    lastUpdated: "2024-07-30T05:02:14.464Z",
   },
   {
     id: "416",
@@ -10746,7 +10743,6 @@ export const connections = [
       ["CHAMPION", "ELSEWHERE", "VALUE", "EXPONENT"],
       ["GONE", "METAL", "ADVOCATE", "ABSENT"],
     ],
-    lastUpdated: "2024-08-09T05:02:09.458Z",
   },
   {
     id: "426",
@@ -11030,7 +11026,6 @@ export const connections = [
       ["CRAB", "REEL", "DRAFT", "RAM"],
       ["PUFF", "BULL", "TURN", "GUST"],
     ],
-    lastUpdated: "2024-08-20T05:03:27.843Z",
   },
   {
     id: "437",
@@ -11670,7 +11665,6 @@ export const connections = [
       ["ZIP", "JACK", "LIFE", "TENET"],
       ["GIANT", "VOLT", "CIVIC", "REFER"],
     ],
-    lastUpdated: "2024-09-13T05:01:10.038Z",
   },
   {
     id: "461",
@@ -11879,7 +11873,6 @@ export const connections = [
       ["WAY", "WELL DONE", "BLOODY", "LIMITED"],
       ["ORACLE", "PROPS", "COLLECTIBLE", "PSYCHIC"],
     ],
-    lastUpdated: "2024-09-21T05:01:28.422Z",
   },
   {
     id: "469",
@@ -11909,7 +11902,6 @@ export const connections = [
       ["NEW", "ALLOY", "OPEN", "NEON"],
       ["LOTTERY", "SAVE", "GRAYSCALE", "RAFFLE"],
     ],
-    lastUpdated: "2024-09-22T05:03:27.743Z",
   },
   {
     id: "470",
@@ -12107,7 +12099,6 @@ export const connections = [
       ["DISCARD", "SHEET", "STATE", "FULFILL"],
       ["BLANKET", "LABOR", "UPHOLD", "DRAW"],
     ],
-    lastUpdated: "2024-09-29T05:03:22.576Z",
   },
   {
     id: "477",
@@ -12348,7 +12339,6 @@ export const connections = [
       ["BAT", "BAN", "PUMPKIN", "CORN"],
       ["FORBID", "WITCH", "REST", "DENY"],
     ],
-    lastUpdated: "2024-10-08T05:01:15.889Z",
   },
   {
     id: "486",
@@ -12765,7 +12755,6 @@ export const connections = [
       ["PROGRAM", "NEWS", "FAN", "PAIN"],
       ["COOKING", "SCHEDULE", "BELLE", "BILL"],
     ],
-    lastUpdated: "2024-10-24T05:02:27.478Z",
   },
   {
     id: "502",
@@ -13165,7 +13154,6 @@ export const connections = [
       ["EXPLOIT", "SOUR", "ADULT", "ANTIC"],
       ["SUGGESTIVE", "STUNT", "KOSHER", "CORD"],
     ],
-    lastUpdated: "2024-11-08T06:01:46.177Z",
   },
   {
     id: "517",
@@ -13218,7 +13206,6 @@ export const connections = [
       ["COWBOY", "CYLINDER", "STEER", "JET"],
       ["TANK", "RAM", "SWING", "SHEPHERD"],
     ],
-    lastUpdated: "2024-11-10T06:02:48.399Z",
   },
   {
     id: "519",
@@ -13436,7 +13423,6 @@ export const connections = [
       ["HAIRSPRAY", "GAS", "DALMATIAN", "COMB"],
       ["PHONE", "HERMIT", "ROLLERS", "DIE"],
     ],
-    lastUpdated: "2024-11-18T06:02:23.158Z",
   },
   {
     id: "527",
@@ -13862,7 +13848,6 @@ export const connections = [
       ["ATLAS", "TOILETRIES", "ECHO", "GUIDE"],
       ["SEWING KIT", "HELEN", "DIRECT", "JOHNSON"],
     ],
-    lastUpdated: "2024-12-04T06:03:39.664Z",
   },
   {
     id: "543",

@@ -14,6 +14,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { joinRoom } from "@/lib/join-room";
 
@@ -22,6 +29,7 @@ const formSchema = z.object({
     message: "Username must be at least 2 characters.",
   }),
   roomId: z.string(),
+  game: z.enum(["connections", "wordle"]),
 });
 
 export function JoinRoomForm() {
@@ -30,6 +38,7 @@ export function JoinRoomForm() {
     defaultValues: {
       username: "",
       roomId: "",
+      game: "connections",
     },
   });
 
@@ -41,7 +50,7 @@ export function JoinRoomForm() {
     <div className="rounded-md border py-4 px-8">
       <h2 className="text-lg font-bold">Join an existing room</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="username"
@@ -58,6 +67,31 @@ export function JoinRoomForm() {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="game"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Game</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select a game" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="connections">Connections</SelectItem>
+                      <SelectItem value="wordle">Wordle</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="roomId"
@@ -67,7 +101,6 @@ export function JoinRoomForm() {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                <FormDescription>The ID of the room</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

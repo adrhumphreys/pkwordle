@@ -4,11 +4,11 @@ import { redirect } from "next/navigation";
 import { PARTYKIT_URL } from "./env";
 import { generateId } from "./id";
 
-export const createNewGame = async (username: string) => {
+export const createNewConnectionsGame = async (username: string) => {
   const id = generateId();
   const playerId = generateId();
 
-  await fetch(`${PARTYKIT_URL}/party/${id}`, {
+  await fetch(`${PARTYKIT_URL}/parties/connections_game/${id}`, {
     method: "POST",
     body: JSON.stringify({ id }),
     headers: {
@@ -16,5 +16,5 @@ export const createNewGame = async (username: string) => {
     },
   });
 
-  redirect(`/${id}?playerId=${playerId}&username=${username}`);
+  redirect(`/connections/${id}?playerId=${playerId}&username=${username}`);
 };

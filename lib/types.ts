@@ -21,17 +21,47 @@ export type WordleGameState = {
   startedAt?: number;
 };
 
+export type ImportedConnectionGame = {
+  id: string;
+  name: string;
+  createdAt: string;
+  board: Record<
+    string,
+    {
+      level: 0 | 1 | 2 | 3;
+      members: string[];
+    }
+  >;
+  startingBoard: string[][];
+};
+
+export type ConnectionGame = {
+  id: string;
+  name: string;
+  createdAt: string;
+  board: Record<
+    string,
+    {
+      level: 0 | 1 | 2 | 3;
+      members: string[];
+    }
+  >;
+  startingBoard: string[];
+};
+
 export type ConnectionsPlayerState = {
   id: string;
   username: string;
   guesses: string[][];
   completedAt?: number;
   score: number;
+  remainingLives: number;
 };
 
 export type ConnectionsGameState = {
   id: string;
   canGuess: boolean;
   startedAt?: number;
+  game: ConnectionGame;
   players: ConnectionsPlayerState[];
 };
