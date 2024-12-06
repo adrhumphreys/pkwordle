@@ -44,3 +44,8 @@ next-env.d.ts
 
 # Ensure I don't commit secrets
 COMMANDS.md
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

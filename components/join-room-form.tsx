@@ -39,7 +39,7 @@ export function JoinRoomForm() {
 
   return (
     <div className="rounded-md border py-4 px-8">
-      <p className="text-lg font-bold">Join an existing room</p>
+      <h2 className="text-lg font-bold">Join an existing room</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <FormField

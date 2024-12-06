@@ -37,7 +37,8 @@ export const useWordle = ({
   }, [socket]);
 
   const submitGuess = useCallback(
-    (guess: string) => {
+    (roughGuess: string) => {
+      const guess = roughGuess.toLocaleLowerCase().replaceAll(" ", "");
       if (!words.includes(guess)) {
         throw new Error("Guess was not a valid word");
       }

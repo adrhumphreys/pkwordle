@@ -63,7 +63,7 @@ export function GameUI({ initialState }: { initialState: GameState }) {
         )}
 
         {playerState ? (
-          <div>
+          <div data-testid="previous-guesses">
             <p>Previous guesses</p>
             <div className="flex flex-col gap-2">
               {playerState.guesses.map((guess, idx) => (
@@ -121,7 +121,7 @@ export function GameUI({ initialState }: { initialState: GameState }) {
       <div className="flex flex-col gap-2">
         <p>Player state:</p>
         <JsonView
-          src={currentState}
+          src={{ ...currentState, word: "mango" }}
           collapsed={(params) => {
             if (params.indexOrName === "guesses") return true;
             return false;
