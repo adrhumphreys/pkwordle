@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "partykit": "npx partykit dev",
+    "deploy:partykit": "npx partykit deploy",
     "lint": "next lint",
     "test": "vitest",
     "e2e": "npx playwright test"
