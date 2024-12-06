@@ -2,7 +2,7 @@ import usePartySocket from "partysocket/react";
 import { PARTYKIT_HOST } from "./env";
 import { WordleGameState } from "@/lib/types";
 import { useCallback, useState } from "react";
-import { words, validWords } from "./words";
+import { validWords } from "./words";
 
 export const useWordle = ({
   playerId,
