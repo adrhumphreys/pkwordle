@@ -1,5 +1,5 @@
-import { expect, test, describe, it, afterEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { expect, describe, it, afterEach, vi } from "vitest";
+import { screen } from "@testing-library/react";
 import { JoinRoomForm } from "../join-room-form";
 import { setup } from "@/tests/render";
 
@@ -8,7 +8,8 @@ const mocks = vi.hoisted(() => {
     joinRoom: vi.fn(),
   };
 });
-const mock = vi.mock("@/lib/join-room", () => ({
+
+vi.mock("@/lib/join-room", () => ({
   joinRoom: mocks.joinRoom,
 }));
 
