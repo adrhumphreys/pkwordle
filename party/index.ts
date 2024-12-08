@@ -69,7 +69,9 @@ export default class Server implements Party.Server {
   async onMessage(message: string) {
     if (!this.gameState) return;
 
-    const event = JSON.parse(message) as { type: "start" | "guess" | "next" };
+    const event = JSON.parse(message) as {
+      type: "start" | "guess" | "next" | "mode";
+    };
 
     if (event.type === "guess") {
       const { playerId, guess } = JSON.parse(message) as {
@@ -77,16 +79,14 @@ export default class Server implements Party.Server {
         guess: string;
       };
 
-      this.handleGuess(guess, playerId);
+      await this.handleGuess(guess, playerId);
     }
 
-    if (event.type === "start") {
-      this.handleStartGame();
-    }
+    if (event.type === "start") await this.handleStartGame();
 
-    if (event.type === "next") {
-      this.handleNextRound();
-    }
+    if (event.type === "next") await this.handleNextRound();
+
+    if (event.type === "mode") await this.handleMode();
   }
 
   async handleStartGame() {
@@ -108,14 +108,22 @@ export default class Server implements Party.Server {
     this.gameState = produce(this.gameState, (draft) => {
       const player = draft.players.find((player) => player.id === playerId);
       if (!player) throw new Error("Missing player");
-      if (player.guesses.length > 5) {
-        // The user is trying to guess more than allowed
+
+      if (player.guesses.length > 6) {
         return;
       }
+
       if (player.completedAt) {
         // They have already won
         return;
       }
+
+      if (
+        player.guesses.some((g) => g.map((g) => g.value).join("") === guess)
+      ) {
+        return;
+      }
+
       const word = draft.word;
       // make guess and tell if its right or not
       const result = guess.split("").map((value, idx): WordleGuessCharacter => {
@@ -169,6 +177,13 @@ export default class Server implements Party.Server {
         player.completedAt = undefined;
       });
     });
+    this.saveGameState();
+    this.room.broadcast(JSON.stringify(this.gameState));
+  }
+
+  async handleMode() {
+    if (!this.gameState) throw new Error("Missing game state");
+    this.gameState.isHardMode = !this.gameState.isHardMode;
     this.saveGameState();
     this.room.broadcast(JSON.stringify(this.gameState));
   }

@@ -1,7 +1,5 @@
 "use client";
 
-import JsonView from "react18-json-view";
-import "react18-json-view/src/style.css";
 import { useWordle } from "@/lib/use-wordle";
 import { WordleGameState } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
@@ -9,7 +7,8 @@ import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { GameState } from "./game-state";
+import { Guess } from "./guess";
 
 export function GameUI({ initialState }: { initialState: WordleGameState }) {
   const params = useSearchParams();
@@ -20,11 +19,12 @@ export function GameUI({ initialState }: { initialState: WordleGameState }) {
     throw new Error("Missing user");
   }
 
-  const { currentState, submitGuess, start, startNextRound } = useWordle({
-    playerId,
-    username,
-    initialState,
-  });
+  const { currentState, submitGuess, start, startNextRound, toggleHardMode } =
+    useWordle({
+      playerId,
+      username,
+      initialState,
+    });
 
   const [currentGuess, setCurrentGuess] = useState("");
 
@@ -58,32 +58,24 @@ export function GameUI({ initialState }: { initialState: WordleGameState }) {
                 Start next round
               </Button>
             )}
+            <Button onClick={toggleHardMode} variant="secondary">
+              {currentState.isHardMode
+                ? "Turn off hard mode"
+                : "Turn on hard mode"}
+            </Button>
           </div>
         )}
 
-        {playerState ? (
-          <div data-testid="previous-guesses">
-            <p>Previous guesses</p>
+        {playerState?.guesses && playerState.guesses.length > 0 ? (
+          <div data-testid="previous-guesses" className="space-y-2">
+            <p className="text-lg font-semibold">Previous guesses</p>
             <div className="flex flex-col gap-2">
               {playerState.guesses.map((guess, idx) => (
-                <div
-                  className="flex gap-2"
+                <Guess
                   key={`${JSON.stringify(guess)}-${idx}`}
-                >
-                  {guess.map((char, idx) => (
-                    <div
-                      key={`${char}-${idx}`}
-                      className={cn(
-                        "uppercase font-bold grid place-items-center w-8 h-10",
-                        char.status === "absent" && "bg-red-300",
-                        char.status === "correct" && "bg-green-300",
-                        char.status === "present" && "bg-orange-300"
-                      )}
-                    >
-                      {char.value}
-                    </div>
-                  ))}
-                </div>
+                  guess={guess}
+                  isHidden={false}
+                />
               ))}
             </div>
           </div>
@@ -118,13 +110,10 @@ export function GameUI({ initialState }: { initialState: WordleGameState }) {
         </ul>
       </div>
       <div className="flex flex-col gap-2">
-        <p>Player state:</p>
-        <JsonView
-          src={{ ...currentState, word: "mango" }}
-          collapsed={(params) => {
-            if (params.indexOrName === "guesses") return true;
-            return false;
-          }}
+        <GameState
+          state={currentState}
+          playerId={playerId}
+          isCompleted={playerState?.completedAt !== undefined}
         />
       </div>
     </div>

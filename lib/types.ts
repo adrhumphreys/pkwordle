@@ -19,6 +19,7 @@ export type WordleGameState = {
   canGuess: boolean;
   players: WordlePlayerState[];
   startedAt?: number;
+  isHardMode?: boolean;
 };
 
 export type ImportedConnectionGame = {
