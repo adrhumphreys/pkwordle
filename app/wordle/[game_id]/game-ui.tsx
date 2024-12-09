@@ -92,6 +92,15 @@ export function GameUI({ initialState }: { initialState: WordleGameState }) {
             <Button disabled={!currentState.canGuess}>Enter</Button>
           </div>
         </form>
+
+        {!playerState?.completedAt &&
+          playerState?.guesses.length &&
+          playerState?.guesses.length >= 6 && (
+            <p>
+              The word was{" "}
+              <span className="font-semibold">{currentState.word}</span>
+            </p>
+          )}
       </div>
       <div className="flex flex-col gap-1 max-w-sm w-full">
         <p>Scores:</p>

@@ -183,7 +183,9 @@ export default class Server implements Party.Server {
 
   async handleMode() {
     if (!this.gameState) throw new Error("Missing game state");
-    this.gameState.isHardMode = !this.gameState.isHardMode;
+    this.gameState = produce(this.gameState, (draft) => {
+      draft.isHardMode = !draft.isHardMode;
+    });
     this.saveGameState();
     this.room.broadcast(JSON.stringify(this.gameState));
   }
