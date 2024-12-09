@@ -3,7 +3,7 @@
 import { useWordle } from "@/lib/use-wordle";
 import { WordleGameState } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,26 +43,44 @@ export function GameUI({ initialState }: { initialState: WordleGameState }) {
     .filter((player) => player.completedAt)
     .sort((a, b) => a.completedAt! - b.completedAt!);
 
+  const hasFinished = useMemo(
+    () =>
+      currentState.players.every(
+        (p) =>
+          p.completedAt !== undefined || (p.guesses && p.guesses.length >= 6)
+      ),
+    []
+  );
+
   return (
     <div className="flex gap-8">
       <div className="flex flex-col gap-8">
         {isAdmin && (
-          <div className="flex gap-2 items-center">
-            {!currentState.canGuess && (
-              <Button variant="secondary" onClick={start}>
-                Start
+          <div>
+            <div className="flex gap-2 items-center">
+              {!currentState.canGuess && (
+                <Button variant="secondary" onClick={start}>
+                  Start
+                </Button>
+              )}
+              {currentState.canGuess && (
+                <Button
+                  variant={hasFinished ? "default" : "secondary"}
+                  onClick={startNextRound}
+                >
+                  Start next round
+                </Button>
+              )}
+
+              <Button onClick={toggleHardMode} variant="secondary">
+                {currentState.isHardMode
+                  ? "Turn off hard mode"
+                  : "Turn on hard mode"}
               </Button>
+            </div>
+            {hasFinished && (
+              <p>All players are finished, start the next round</p>
             )}
-            {currentState.canGuess && (
-              <Button variant="secondary" onClick={startNextRound}>
-                Start next round
-              </Button>
-            )}
-            <Button onClick={toggleHardMode} variant="secondary">
-              {currentState.isHardMode
-                ? "Turn off hard mode"
-                : "Turn on hard mode"}
-            </Button>
           </div>
         )}
 
